@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>College Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-light: linear-gradient(to right, #e0f7fa, #f1f8e9);
+            --bg-dark: #0f0f0f;
+            --text-dark: #2e7d32;
+            --text-light: #ffffff;
+            --neon: #00ffc3;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            background: radial-gradient(circle at top left, #1a1a1a, #000000);
+            overflow: hidden;
+        }
+
+        .robot {
+            position: absolute;
+            width: 150px;
+            opacity: 0.1;
+            animation: float-robot 10s ease-in-out infinite alternate;
+        }
+
+        .robot:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .robot:nth-child(2) {
+            bottom: 15%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+
+        .robot:nth-child(3) {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 5s;
+        }
+
+        @keyframes float-robot {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 400px;
+            position: relative;
+            z-index: 10;
+            transition: background-color 0.3s ease;
+        }
+
+        body.dark-mode {
+            color: var(--text-light);
+        }
+
+        body.dark-mode .container {
+            background-color: rgba(30, 30, 30, 0.95);
+            box-shadow: 0 0 20px #00ffc360;
+        }
+
+        h1 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        body.dark-mode h1 {
+            color: var(--neon);
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .neon-button {
+            background-color: transparent;
+            border: 2px solid var(--neon);
+            color: var(--neon);
+            text-shadow: 0 0 5px var(--neon);
+            box-shadow: 0 0 10px var(--neon);
+        }
+
+        .neon-button:hover {
+            background-color: var(--neon);
+            color: #000;
+        }
+
+        #chat-area {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+            background-color: rgba(0, 0, 0, 0.03);
+            transition: background 0.3s ease;
+        }
+
+        body.dark-mode #chat-area {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        #answer {
+            font-weight: 500;
+        }
+
+        .chat-bubble {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 15px;
+            max-width: 90%;
+            text-align: left;
+        }
+
+        .user-bubble {
+            background-color: #e0f7fa;
+        }
+
+        .bot-bubble {
+            background-color: #dcedc8;
+        }
+
+        body.dark-mode .user-bubble {
+            background-color: #263238;
+            color: #fff;
+        }
+
+        body.dark-mode .bot-bubble {
+            background-color: #37474f;
+            color: #fff;
+        }
+
+        .suggestions {
+            margin-top: 15px;
+        }
+
+        .suggestions button {
+            margin: 3px;
+            background-color: #c8e6c9;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        body.dark-mode .suggestions button {
+            background-color: #455a64;
+            color: white;
+        }
+
+        .avatar {
+            position: absolute;
+            top: -60px;
+            right: -30px;
+            height: 60px;
+            width: 60px;
+            background: url('https://cdn-icons-png.flaticon.com/512/4712/4712106.png') no-repeat center/contain;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        #typing {
+            display: none;
+            margin-top: 10px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <div class="animated-bg">
+        <img class="robot" src="https://cdn-icons-png.flaticon.com/512/4712/4712106.png" alt="robot">
+        <img class="robot" src="https://cdn-icons-png.flaticon.com/512/4712/4712106.png" alt="robot">
+        <img class="robot" src="https://cdn-icons-png.flaticon.com/512/4712/4712106.png" alt="robot">
+    </div>
+
+    <div class="container">
+        <div class="avatar"></div>
+        <h1>Ask your college chatbot!</h1>
+        <input type="text" id="question" placeholder="Type your question here">
+        <br>
+        <button class="neon-button" onclick="askQuestion()">Ask</button>
+
+        <!-- Scrollable chat area -->
+        <div id="chat-area">
+            <div id="typing">Bot is typing<span class="dots">...</span></div>
+            <p id="answer" class="chat-bubble bot-bubble" style="display:none;"></p>
+        </div>
+
+        <div class="suggestions">
+            <button onclick="setQuestion('What is the college timing?')">College Timing</button>
+            <button onclick="setQuestion('Who is the principal?')">Principal</button>
+            <button onclick="setQuestion('Where is the admin office?')">Admin Office</button>
+        </div>
+
+        <br><br>
+        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </div>
+
+    <script>
+        function setQuestion(text) {
+            document.getElementById("question").value = text;
+            askQuestion();
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+
+        function askQuestion() {
+            const input = document.getElementById("question").value;
+            const answerEl = document.getElementById("answer");
+            const typingEl = document.getElementById("typing");
+
+            answerEl.style.display = "none";
+            typingEl.style.display = "block";
+
+            fetch("/ask", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ question: input })
+            })
+            .then(res => res.json())
+            .then(data => {
+                typingEl.style.display = "none";
+                answerEl.style.display = "inline-block";
+                if (data.answer) {
+                    answerEl.innerText = data.answer;
+                } else if (data.error) {
+                    answerEl.innerText = "Error: " + data.error;
+                } else {
+                    answerEl.innerText = "Sorry, no response!";
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                typingEl.style.display = "none";
+                answerEl.style.display = "inline-block";
+                answerEl.innerText = "Error occurred.";
+            });
+        }
+    </script>
+</body>
+</html>

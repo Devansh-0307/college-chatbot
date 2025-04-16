@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: college-chatbot
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
+    envVars:
+      - key: Gemini_api_key
+        value: AIzaSyAuWi1uY0LZT15LCYpgPYA63PZDUyQIKCs
